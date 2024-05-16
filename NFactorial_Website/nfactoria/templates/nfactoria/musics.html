@@ -1,0 +1,43 @@
+{% extends 'nfactoria/standart.html' %}
+{% block title %}All songs {% endblock %}
+{% block body %}
+    <style>
+        .container {
+            margin-top: 50px;
+        }
+        .card {
+            width: 100%;
+            max-width: 800px;
+            margin: auto;
+        }
+        .card-title {
+            font-size: 1.5rem;
+        }
+                .card-text {
+            font-size: 1.2rem;
+        }
+        .card-body .btn {
+            margin-top: 15px;
+        }
+
+    </style>
+    <div class="container">
+    {% for i in music %}
+    <div class="card mb-3">
+        <div class="row g-0">
+            <div class="col-md-4">
+                <img src="/media/{{ i.image }}" class="img-fluid rounded-start" alt="{{ i.name }}">
+            </div>
+            <div class="col-md-8">
+                <div class="card-body">
+                    <h5 class="card-title">{{ i.name }}</h5>
+                    <p class="card-text">{{ i.genre }}</p>
+                    <p class="card-text">{{ i.author }}</p>
+                    <a href="/nfactoria/musics/{{ i.music_id }}"><button class="btn btn-outline-danger">Подробнее</button></a>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+    </div>
+{% endblock %}

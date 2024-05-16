@@ -1,0 +1,92 @@
+{% extends 'nfactoria/musics.html' %}
+{% block title %}All musics{% endblock %}
+{% block body %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-4" style="margin-top: 150px;">
+            <img src="/media/{{ music.image }}" alt="" height="350px" width="500px">
+        </div>
+        <div class="col-md-6" style="margin-top: 150px;">
+            <div class="card" style="padding: 20px; margin-left: 100px; background-color: rgba(0, 128, 0, 0.2);">
+                <div class="card-body">
+                    <h2 class="card-title">Название: {{ music.name }}</h2>
+                    <h2 class="card-text">Автор: {{ music.author }}</h2>
+                    <h2 class="card-text">Жанр: {{ music.genre }}</h2>
+                    <audio controls style="margin-top: 20px; width: 100%;">
+                        <source src="/media/{{ music.song }}" type="audio/mp3">
+                    </audio>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Добавляем секцию для отображения отзывов -->
+    <div class="row" style="margin-top: 50px;">
+        <div class="col-md-12">
+            <h2>Отзывы</h2>
+            {% if reviews %}
+                {% for review in reviews %}
+                    <div>
+                        <p>Рейтинг: {{ review.rating }} ★</p>
+                        <p>{{ review.comment }}</p>
+                        <p>От {{ review.user.username }} на {{ review.created_at }}</p>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p>Пока нет отзывов.</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Добавляем форму для добавления нового отзыва -->
+    <div class="row" style="margin-top: 50px;">
+        <div class="col-md-12">
+            <h2>Добавить отзыв</h2>
+            {% if user.is_authenticated %}
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="stars">
+                        {% for star in stars reversed %}
+                            <input type="radio" id="star{{ star }}" name="rating" value="{{ star }}" {% if form.rating.value == star %}checked{% endif %}/>
+                            <label for="star{{ star }}">★</label>
+                        {% endfor %}
+                    </div>
+                    <div>
+                        {{ form.comment.label_tag }}<br>
+                        {{ form.comment }}
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="margin-top: 10px;">Отправить отзыв</button>
+                </form>
+            {% else %}
+                <p>Вы должны <a href="{% url 'login' %}">войти</a>, чтобы оставить отзыв.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<!-- Встроенные стили для звездочек -->
+<style>
+    .stars {
+        display: flex;
+        flex-direction: row-reverse;
+        justify-content: flex-end;
+    }
+    .stars input[type="radio"] {
+        display: none;
+    }
+    .stars label {
+        color: gray;
+        font-size: 25px;
+        padding: 0 5px;
+        cursor: pointer;
+    }
+    .stars input[type="radio"]:checked ~ label {
+        color: gold;
+    }
+    .stars label:hover,
+    .stars label:hover ~ label {
+        color: gold;
+    }
+</style>
+
+{% endblock %}
